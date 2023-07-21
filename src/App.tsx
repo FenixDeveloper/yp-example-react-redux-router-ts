@@ -36,7 +36,10 @@ function Modal({ children, onClose }: { children: ReactElement, onClose: () => v
 }
 
 function App() {
+  // 1. Актуальный адрес в браузере
   const location = useLocation();
+
+  // 2. Предыдущая страница если есть
   const background = location.state && location.state.background;
   const navigate = useNavigate();
 
@@ -47,12 +50,14 @@ function App() {
         <nav className={styles.menu}>
           <Link to="/">Main</Link>
           <Link to="/counter">Counter</Link>
+          {/* 3. При переходе на страницу сохраняем информацию о текущей странице откуда пришли */}
           <Link to="/modal" state={{ background: location }}>Modal (true)</Link>
           <Link to="/modal">Modal (false)</Link>
           <Link to="/notfound">Not Found</Link>
         </nav>
 
         <section className={styles.section}>
+          {/* 4. В первом блоке маршрутов показываем страницу для актуального адреса, только если нет информации о предыдущей странице */}
           <Routes location={background || location}>
             <Route path="/" element={<MainPage />} />
             <Route path="/counter" element={<CounterPage />} />
@@ -61,7 +66,9 @@ function App() {
           </Routes>
         </section>
 
+        {/* 5. Если передана предыдущая страница, значит хотим открыть модалку. Обрабатываем те маршруты, которые хотим показать в модальном окне. */}
         {background && <Routes>
+          {/* 6. Чтобы не заворачивать каждый по отдельности, можно обернуть в общий для всех контейнер модального окна. */}
           <Route element={<Modal onClose={onModalClose}>
             <Outlet />
           </Modal>}>
